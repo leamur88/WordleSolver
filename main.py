@@ -56,6 +56,7 @@ def playGame():
         print(len(board))
         remove = []
         removeMultiple = []
+        correct = 0
         for j in range(5):
             evaluation = board[j].get_attribute("evaluation")
             print(j, board[j].get_attribute("letter"), evaluation)
@@ -68,10 +69,11 @@ def playGame():
                 validLetters.append(wordChosen[j])
                 remove.append([wordChosen[j], True, -1])
             else:
+                correct +=1
                 validLetters.append(wordChosen[j])
                 remove.append([wordChosen[j], True, j])
         words.pop(wordChosen)
-        if len(remove) == 0 and len(removeMultiple) == 0:
+        if correct == 5:
             return i
         for k in remove:
             removeLetter(k[0], k[1], k[2])
@@ -107,20 +109,14 @@ def removeLetter(letter, inWord, pos=-1):
         if pos > -1:
             for word in words.keys():
                 if word[pos] != letter:
-                    if word == "sugar":
-                        print("Hello?", letter, pos, word[pos])
                     remove.append(word)
         else:
             for word in words.keys():
                 if letter not in word:
-                    if word == "sugar":
-                        print("Hello??")
                     remove.append(word)
     else:
         for word in words.keys():
             if letter in word:
-                if word == "sugar":
-                    print("Hello???")
                 remove.append(word)
     for i in remove:
         words.pop(i)
@@ -147,6 +143,6 @@ if __name__ == '__main__':
     print(len(words.keys()))
     # print(chooseWord())
     num = playGame()
-    print("Congratualtions!!!! you made it out in " + str(num) + "moves.")
+    print("Congratualtions!!!! you made it out in " + str(num + 1) + "moves.")
     # for i in range(6):
     # guess = input("What would you like your guess to be? ")
