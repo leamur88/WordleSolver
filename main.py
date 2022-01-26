@@ -1,4 +1,4 @@
-import csv, time
+import csv, time, clipboard
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -57,9 +57,9 @@ def playGame():
         .querySelectorAll('game-row')[{}].shadowRoot
         .querySelector('div.row')
         .querySelectorAll('game-tile')
-        """.format(i)
+        """
 
-        board = driver.execute_script(javascript)
+        board = driver.execute_script(javascript.format(i))
         correct = 0
         for j in range(5):
             evaluation = board[j].get_attribute("evaluation")
