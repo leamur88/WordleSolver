@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-
+validLetters = []
 startWord = "penis"
 words = {}
 wordsleft = -1
@@ -54,43 +54,78 @@ def playGame():
 
         board = driver.execute_script(javascript)
         print(len(board))
+        remove = []
+        removeMultiple = []
         for j in range(5):
             evaluation = board[j].get_attribute("evaluation")
+            print(j, board[j].get_attribute("letter"), evaluation)
             if evaluation == "absent":
-                removeLetter(wordChosen[j], False)
+                if wordChosen[j] not in validLetters:
+                    remove.append([wordChosen[j], False, -1])
+                else:
+                    removeMultiple.append(wordChosen[j])
             elif evaluation == "present":
-                removeLetter(wordChosen[j], True)
+                validLetters.append(wordChosen[j])
+                remove.append([wordChosen[j], True, -1])
+                # removeLetter(wordChosen[j], True)
             else:
-                removeLetter(wordChosen[j], True, j)
-
-        time.sleep(2)
+                validLetters.append(wordChosen[j])
+                remove.append([wordChosen[j], True, j])
+                # removeLetter(wordChosen[j], True, j)
+        for k in remove:
+            removeLetter(k[0], k[1], k[2])
+        for l in removeMultiple:
+            removeMultipleLetter(l)
+        time.sleep(5)
         wordsleft = len(words.keys())
         print("We have " + str(wordsleft) + " words left to guess!")
 
         wordChosen = chooseWord()
         webpage.send_keys(wordChosen)
+        print("word chosen:", wordChosen)
+        time.sleep(5)
+
         webpage.send_keys(Keys.RETURN)
-        time.sleep(1)
+        print("return")
+        driver.refresh()
+        webpage = driver.find_element(By.CLASS_NAME, "nightmode")
+        # webpage.send_keys(Keys.RETURN)
+        time.sleep(10)
 
-
+def removeMultipleLetter(letter):
+    remove = []
+    for word in words.keys():
+        if word.count(letter) >=2:
+            remove.append(word)
+    for i in remove:
+        words.pop(i)
 def removeLetter(letter, inWord, pos=-1):
+    remove = []
     if inWord:
         if pos > -1:
             for word in words.keys():
                 if word[pos] != letter:
-                    words.pop(word)
+                    if word == "sugar":
+                        print("Hello?", letter, pos, word[pos])
+                    remove.append(word)
         else:
             for word in words.keys():
                 if letter not in word:
-                    words.pop(word)
+                    if word == "sugar":
+                        print("Hello??")
+                    remove.append(word)
     else:
         for word in words.keys():
             if letter in word:
-                words.pop(word)
+                if word == "sugar":
+                    print("Hello???")
+                remove.append(word)
+    for i in remove:
+        words.pop(i)
 
 
 def calculateProb(word):
-    ret = 0
+    ret = 1
     for i in word:
         ret *= wordProbs[i]
     return ret
@@ -101,13 +136,14 @@ def chooseWord():
     word = ''
     for i in words.keys():
         if words[i] > highest:
-            highest = word[i]
+            highest = words[i]
             word = i
     return word
 
 if __name__ == '__main__':
     init()
     print(len(words.keys()))
+    # print(chooseWord())
     playGame()
     # for i in range(6):
     # guess = input("What would you like your guess to be? ")
