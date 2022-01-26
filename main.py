@@ -107,8 +107,7 @@ def playGame():
         print("return")
         driver.refresh()
         webpage = driver.find_element(By.CLASS_NAME, "nightmode")
-        # webpage.send_keys(Keys.RETURN)
-        time.sleep(10)
+        time.sleep(6)
 
 
 def removeMultipleLetter(letter):
@@ -123,8 +122,6 @@ def removeSpecificPosition(letter, pos):
     remove = []
     for word in words.keys():
         if word[pos] != letter:
-            # if word == "whack":
-            #     print("hello?")
             remove.append(word)
     for i in remove:
         words.pop(i)
@@ -134,8 +131,6 @@ def removeLetterNotInWord(letter):
     remove = []
     for word in words.keys():
         if letter not in word:
-            # if word == "whack":
-            #     print("hello??")
             remove.append(word)
     for i in remove:
         words.pop(i)
@@ -144,8 +139,6 @@ def removeLetter(letter):
     remove = []
     for word in words.keys():
         if letter in word:
-            # if word == "whack":
-            #     print("hello???")
             remove.append(word)
     for i in remove:
         words.pop(i)
@@ -172,6 +165,6 @@ if __name__ == '__main__':
     print(len(words.keys()))
     # print(chooseWord())
     num = playGame()
-    print("Congratualtions!!!! you made it out in " + str(num + 1) + " moves.")
+    print("Congratulations!!!! you made it out in " + str(num + 1) + " moves.")
     # for i in range(6):
     # guess = input("What would you like your guess to be? ")
