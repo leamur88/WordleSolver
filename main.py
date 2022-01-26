@@ -10,7 +10,7 @@ chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 validLetters = []
-startWord = "penis"
+startWord = "irate"
 words = {}
 wordsleft = -1
 wordProbs = {'a': .078, 'b': .02, 'c': .04, 'd': .038, 'e': .11, 'f': .014, 'g': .03, 'h': .023, 'i': .082, 'j': .0021,
@@ -19,7 +19,7 @@ wordProbs = {'a': .078, 'b': .02, 'c': .04, 'd': .038, 'e': .11, 'f': .014, 'g':
 
 
 def init():
-    with open('validWords.csv') as f:
+    with open('supposedWords.csv', encoding='utf-8-sig') as f:
         csvreader = csv.reader(f)
         validWords = []
         for i in csvreader:
@@ -67,11 +67,12 @@ def playGame():
             elif evaluation == "present":
                 validLetters.append(wordChosen[j])
                 remove.append([wordChosen[j], True, -1])
-                # removeLetter(wordChosen[j], True)
             else:
                 validLetters.append(wordChosen[j])
                 remove.append([wordChosen[j], True, j])
-                # removeLetter(wordChosen[j], True, j)
+        words.pop(wordChosen)
+        if len(remove) == 0 and len(removeMultiple) == 0:
+            return i
         for k in remove:
             removeLetter(k[0], k[1], k[2])
         for l in removeMultiple:
@@ -91,6 +92,7 @@ def playGame():
         webpage = driver.find_element(By.CLASS_NAME, "nightmode")
         # webpage.send_keys(Keys.RETURN)
         time.sleep(10)
+
 
 def removeMultipleLetter(letter):
     remove = []
@@ -144,6 +146,7 @@ if __name__ == '__main__':
     init()
     print(len(words.keys()))
     # print(chooseWord())
-    playGame()
+    num = playGame()
+    print("Congratualtions!!!! you made it out in " + str(num) + "moves.")
     # for i in range(6):
     # guess = input("What would you like your guess to be? ")
