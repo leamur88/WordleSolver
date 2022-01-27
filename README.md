@@ -29,6 +29,10 @@ derived from the frequency of the letter within a dictionary. This means words w
 guessed next instead of words with j's and w's. Once the answer is guessed, the json is updated with the result and the 
 wordle display is printed in the terminal.
 
+## AWS
+Currently using the tutorial from this [video](https://www.youtube.com/watch?v=jWqbYiHudt8) to set up my AWS Lambda 
+environment.
+
 ## Future Expansion
 * Tweet out daily wordle summary for each bot 
 * ^Add this to Lambda Function
