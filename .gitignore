@@ -3,4 +3,5 @@
 chrome*
 __pycache__
 venv/
+docker*
 
