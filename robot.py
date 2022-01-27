@@ -1,4 +1,5 @@
 import csv, time, clipboard
+import json
 from random import randrange
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -35,8 +36,7 @@ def init(filename):
 
 def playGame(startWord):
     driver.get("https://www.powerlanguage.co.uk/wordle/")
-    # wordChosen = startWord
-    wordChosen = "blahs"
+    wordChosen = startWord
     webpage = driver.find_element(By.CLASS_NAME, "nightmode")
 
     webpage.click()
@@ -94,20 +94,19 @@ def playGame(startWord):
         for m in removeMultiple:
             removeMultipleLetter(m)
 
-        time.sleep(5)
+        time.sleep(2)
         wordsleft = len(words.keys())
         print("We have " + str(wordsleft) + " words left to guess!")
 
         wordChosen = chooseWord()
         webpage.send_keys(wordChosen)
         print("word chosen:", wordChosen)
-        time.sleep(5)
 
         webpage.send_keys(Keys.RETURN)
         print("return")
         driver.refresh()
         webpage = driver.find_element(By.CLASS_NAME, "nightmode")
-        time.sleep(6)
+        time.sleep(1)
 
 
 def removeMultipleLetter(letter):
@@ -165,6 +164,47 @@ def chooseWord():
     return word
 
 
+def collectInfo(filename, n):
+    driver.get("https://www.powerlanguage.co.uk/wordle/")
+    # webpage = driver.find_element(By.CLASS_NAME, "nightmode")
+    javascript1 = """return document
+            .querySelector('game-app').shadowRoot
+            .querySelector('game-theme-manager')
+            .querySelector('#game')
+            .querySelector('game-modal')
+            .querySelector('game-stats').shadowRoot
+            .querySelector('div.container')
+            .querySelector('div.footer')
+            .querySelector('div.share')
+            """
+    javascript2 = """return document
+                .querySelector('game-app').shadowRoot
+                .querySelector('game-theme-manager')
+                .querySelector('#game')
+                .querySelector('game-modal')
+                .querySelector('game-stats')
+                """
+    time.sleep(2)
+    share = driver.execute_script(javascript1)
+    score = driver.execute_script(javascript2)
+    share.find_element(By.ID, 'share-button').click()
+    print("Share", share)
+    print(clipboard.paste())
+
+    with open('results.json', 'r+') as f:
+        data = json.load(f)
+        if filename == 'validWords.csv':
+            data["dumb"][score.get_attribute("highlight-guess")] += 1  # <--- add `id` value.
+        else:
+            data["smart"][score.get_attribute("highlight-guess")] += 1
+
+        f.seek(0)  # <--- should reset file position to the beginning.
+        json.dump(data, f, indent=4)
+        f.truncate()  # remove remaining part
+
+
 def run(filename):
     word = init(filename)
-    return playGame(word)
+    n = playGame(word)
+    collectInfo(filename, n)
+    return n
