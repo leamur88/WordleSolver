@@ -22,6 +22,7 @@ wordsleft = -1
 wordProbs = {'a': .078, 'b': .02, 'c': .04, 'd': .038, 'e': .11, 'f': .014, 'g': .03, 'h': .023, 'i': .082, 'j': .0021,
              'k': .025, 'l': .053, 'm': .027, 'n': .072, 'o': .061, 'p': .028, 'q': .0024, 'r': .073, 's': .087,
              't': .067, 'u': .033, 'v': .01, 'w': .0091, 'x': .0027, 'y': .016, 'z': .0044}
+tweet = ""
 
 chromeOptions = Options()
 
@@ -42,9 +43,10 @@ def lambda_handler(event, context):
     print("Starting word:", word)
     n = playGame(word)
     print("Congratulations!!!! you made it out in " + str(n + 1) + " moves.")
+    print(tweet)
     return True
 
-def collectInfo(filename, n):
+def collectInfo(filename):
     driver.get("https://www.powerlanguage.co.uk/wordle/")
     # webpage = driver.find_element(By.CLASS_NAME, "nightmode")
     javascript1 = """return document
@@ -176,17 +178,21 @@ def playGame(startWord):
             evaluation = board[j].get_attribute("evaluation")
             print(j, board[j].get_attribute("letter"), evaluation)
             if evaluation == "absent":
+                tweet += emoji.emojize(":black_large_square:")
                 if wordChosen[j] not in validLetters:
                     removeChar.append(wordChosen[j])
                 else:
                     removeMultiple.append(wordChosen[j])
             elif evaluation == "present":
+                tweet += emoji.emojize(":yellow_square:")
                 validLetters.append(wordChosen[j])
                 removeNotIn.append([wordChosen[j], j])
             else:
                 correct += 1
+                tweet += emoji.emojize(":green_square:")
                 validLetters.append(wordChosen[j])
                 removePos.append([wordChosen[j], j])
+        tweet += '\n'
         words.pop(wordChosen, None)
         if correct == 5:
             return i
