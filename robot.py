@@ -206,5 +206,5 @@ def collectInfo(filename, n):
 def run(filename):
     word = init(filename)
     n = playGame(word)
-    collectInfo(filename, n)
+    # collectInfo(filename, n)
     return n
