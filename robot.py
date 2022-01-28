@@ -148,9 +148,12 @@ def removeLetter(letter):
 
 
 def calculateProb(word):
-    ret = 1
+    ret = 0
     for i in word:
-        ret *= wordProbs[i]
+        val = wordProbs[i]
+        if word.count(i) > 1:
+            val *= .1
+        ret += val
     return ret
 
 
