@@ -22,7 +22,7 @@ wordsleft = -1
 wordProbs = {'a': .078, 'b': .02, 'c': .04, 'd': .038, 'e': .11, 'f': .014, 'g': .03, 'h': .023, 'i': .082, 'j': .0021,
              'k': .025, 'l': .053, 'm': .027, 'n': .072, 'o': .061, 'p': .028, 'q': .0024, 'r': .073, 's': .087,
              't': .067, 'u': .033, 'v': .01, 'w': .0091, 'x': .0027, 'y': .016, 'z': .0044}
-tweet = ""
+
 
 chromeOptions = Options()
 
@@ -41,37 +41,11 @@ def lambda_handler(event, context):
     # driver = instance_.get()
     word = init('supposedWords.csv')
     print("Starting word:", word)
-    n = playGame(word)
-    print("Congratulations!!!! you made it out in " + str(n + 1) + " moves.")
-    print(tweet)
+    response = playGame(word)
+    print("Congratulations!!!! you made it out in " + str(response[0] + 1) + " moves.")
+    print("tweet\n", response[1])
     return True
 
-def collectInfo(filename):
-    driver.get("https://www.powerlanguage.co.uk/wordle/")
-    # webpage = driver.find_element(By.CLASS_NAME, "nightmode")
-    javascript1 = """return document
-            .querySelector('game-app').shadowRoot
-            .querySelector('game-theme-manager')
-            .querySelector('#game')
-            .querySelector('game-modal')
-            .querySelector('game-stats').shadowRoot
-            .querySelector('div.container')
-            .querySelector('div.footer')
-            .querySelector('div.share')
-            """
-    # javascript2 = """return document
-    #             .querySelector('game-app').shadowRoot
-    #             .querySelector('game-theme-manager')
-    #             .querySelector('#game')
-    #             .querySelector('game-modal')
-    #             .querySelector('game-stats')
-    #             """
-    time.sleep(2)
-    share = driver.execute_script(javascript1)
-    # score = driver.execute_script(javascript2)
-    share.find_element(By.ID, 'share-button').click()
-    print("Share", share)
-    print(clipboard.paste())
 
 def init(filename):
     bucket = "wordlesolvertwitter"
@@ -148,7 +122,7 @@ def chooseWord():
 def playGame(startWord):
     driver.get("https://www.powerlanguage.co.uk/wordle/")
     wordChosen = startWord
-
+    tweet = ""
     webpage = driver.find_element(By.TAG_NAME, "body")
 
     webpage.click()
@@ -195,7 +169,7 @@ def playGame(startWord):
         tweet += '\n'
         words.pop(wordChosen, None)
         if correct == 5:
-            return i
+            return [i,tweet]
 
         for c in removeChar:
             if c not in validLetters:
