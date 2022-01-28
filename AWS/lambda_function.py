@@ -1,7 +1,7 @@
 import json
 import csv
 import time
-import clipboard
+import emoji
 from random import randrange
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
