@@ -13,7 +13,8 @@ at the network tab of inspect element on chrome and downloading the only js file
 of this file is saved as "wordle.js" and you can scroll through it to find the lists for yourself if you'd like.
 
 ## Prerequisites
-Must have selenium installed
+Must have selenium installed version == 4.1.0
+chromium version == 97.0.4692
 
 ## How to run
 Simply run the main.py file to start the robot. Comment out which word-bank you would like to use.
