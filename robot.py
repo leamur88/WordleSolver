@@ -164,7 +164,7 @@ def chooseWord():
     return word
 
 
-def collectInfo(filename, n):
+def collectInfo(filename):
     driver.get("https://www.powerlanguage.co.uk/wordle/")
     # webpage = driver.find_element(By.CLASS_NAME, "nightmode")
     javascript1 = """return document
@@ -191,20 +191,20 @@ def collectInfo(filename, n):
     print("Share", share)
     print(clipboard.paste())
 
-    with open('results.json', 'r+') as f:
-        data = json.load(f)
-        if filename == 'validWords.csv':
-            data["dumb"][score.get_attribute("highlight-guess")] += 1  # <--- add `id` value.
-        else:
-            data["smart"][score.get_attribute("highlight-guess")] += 1
-
-        f.seek(0)  # <--- should reset file position to the beginning.
-        json.dump(data, f, indent=4)
-        f.truncate()  # remove remaining part
+    # with open('results.json', 'r+') as f:
+    #     data = json.load(f)
+    #     if filename == 'validWords.csv':
+    #         data["dumb"][score.get_attribute("highlight-guess")] += 1
+    #     else:
+    #         data["smart"][score.get_attribute("highlight-guess")] += 1
+    #
+    #     f.seek(0)
+    #     json.dump(data, f, indent=4)
+    #     f.truncate()
 
 
 def run(filename):
     word = init(filename)
     n = playGame(word)
-    # collectInfo(filename, n)
+    collectInfo(filename)
     return n
