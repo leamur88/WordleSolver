@@ -1,7 +1,7 @@
 import json
 import csv
 import time
-# import clipboard
+import clipboard
 from random import randrange
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
@@ -44,32 +44,32 @@ def lambda_handler(event, context):
     print("Congratulations!!!! you made it out in " + str(n + 1) + " moves.")
     return True
 
-# def collectInfo(filename, n):
-#     driver.get("https://www.powerlanguage.co.uk/wordle/")
-#     # webpage = driver.find_element(By.CLASS_NAME, "nightmode")
-#     javascript1 = """return document
-#             .querySelector('game-app').shadowRoot
-#             .querySelector('game-theme-manager')
-#             .querySelector('#game')
-#             .querySelector('game-modal')
-#             .querySelector('game-stats').shadowRoot
-#             .querySelector('div.container')
-#             .querySelector('div.footer')
-#             .querySelector('div.share')
-#             """
-#     javascript2 = """return document
-#                 .querySelector('game-app').shadowRoot
-#                 .querySelector('game-theme-manager')
-#                 .querySelector('#game')
-#                 .querySelector('game-modal')
-#                 .querySelector('game-stats')
-#                 """
-#     time.sleep(2)
-#     share = driver.execute_script(javascript1)
-#     score = driver.execute_script(javascript2)
-#     share.find_element(By.ID, 'share-button').click()
-#     print("Share", share)
-#     print(clipboard.paste())
+def collectInfo(filename, n):
+    driver.get("https://www.powerlanguage.co.uk/wordle/")
+    # webpage = driver.find_element(By.CLASS_NAME, "nightmode")
+    javascript1 = """return document
+            .querySelector('game-app').shadowRoot
+            .querySelector('game-theme-manager')
+            .querySelector('#game')
+            .querySelector('game-modal')
+            .querySelector('game-stats').shadowRoot
+            .querySelector('div.container')
+            .querySelector('div.footer')
+            .querySelector('div.share')
+            """
+    # javascript2 = """return document
+    #             .querySelector('game-app').shadowRoot
+    #             .querySelector('game-theme-manager')
+    #             .querySelector('#game')
+    #             .querySelector('game-modal')
+    #             .querySelector('game-stats')
+    #             """
+    time.sleep(2)
+    share = driver.execute_script(javascript1)
+    # score = driver.execute_script(javascript2)
+    share.find_element(By.ID, 'share-button').click()
+    print("Share", share)
+    print(clipboard.paste())
 
 def init(filename):
     bucket = "wordlesolvertwitter"
