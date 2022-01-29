@@ -3,7 +3,7 @@ import boto3
 from requests_oauthlib import OAuth1Session
 
 s3 = boto3.client('s3')
-bucket = 'wordlesolverbot'
+bucket = 'wordlesolvertwitter'
 def postTweet(consumer_token, consumer_key, access_token, access_token_secret, payload):
     oauth = OAuth1Session(
         consumer_token,
@@ -38,7 +38,7 @@ def createPayload(msg, reply):
         return {"text": msg}
 
 def sendTweet(msg, replyID):
-    key = 'secrets.json'
+    key = 'secretsWordle.json'
     response = s3.get_object(Bucket=bucket, Key=key)
     content = response['Body']
 
@@ -48,7 +48,7 @@ def sendTweet(msg, replyID):
     at = secrets['access_token']
     ats = secrets['access_key']
 
-    temp_payload = createPayload(msg_to_send, reply_id)
-    partial_response = postTweet(ct, ck, at, ats, temp_payload)
+    payload = createPayload(msg_to_send, reply_id)
+    partial_response = postTweet(ct, ck, at, ats, payload)
     reply_id = partial_response['data']['id']
     return reply_id
