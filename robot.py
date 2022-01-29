@@ -194,16 +194,16 @@ def collectInfo(filename):
     print("Share", share)
     print(clipboard.paste())
 
-    # with open('results.json', 'r+') as f:
-    #     data = json.load(f)
-    #     if filename == 'validWords.csv':
-    #         data["dumb"][score.get_attribute("highlight-guess")] += 1
-    #     else:
-    #         data["smart"][score.get_attribute("highlight-guess")] += 1
-    #
-    #     f.seek(0)
-    #     json.dump(data, f, indent=4)
-    #     f.truncate()
+    with open('results.json', 'r+') as f:
+        data = json.load(f)
+        if filename == 'validWords.csv':
+            data["dumb"][score.get_attribute("highlight-guess")] += 1
+        else:
+            data["smart"][score.get_attribute("highlight-guess")] += 1
+
+        f.seek(0)
+        json.dump(data, f, indent=4)
+        f.truncate()
 
 
 def run(filename):
