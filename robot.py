@@ -208,6 +208,7 @@ def collectInfo(filename):
 
 def run(filename):
     word = init(filename)
+    word = "penis"
     n = playGame(word)
     collectInfo(filename)
     return n

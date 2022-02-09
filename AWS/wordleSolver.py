@@ -11,8 +11,9 @@ import boto3
 
 
 validLetters = []
-startWordChoices = ["penis", "audio", "irate", "soare", "roate", "raise", "slate", "sauce", "slice", "shale", "share",
+smartStartWordChoices = ["penis", "audio", "irate", "soare", "roate", "raise", "slate", "sauce", "slice", "shale", "share",
                     "sooty", "shine", "suite", "crane", "reais", "blahs", "centu", "doggo", "arose", "earls", "laser"]
+dumbStartWordChoices = ["penis", "farts", "pussy", "stinky"]
 words = {}
 wordsleft = -1
 wordProbs = {'a': .078, 'b': .02, 'c': .04, 'd': .038, 'e': .11, 'f': .014, 'g': .03, 'h': .023, 'i': .082, 'j': .0021,
@@ -46,7 +47,11 @@ def init(filename):
         words[i.lower()] = calculateProb(i.lower())
     wordsleft = len(validWords)
     print("We have " + str(wordsleft) + " words left to guess!")
-    return startWordChoices[randrange(len(startWordChoices))]
+    if filename == "supposedWords.csv":
+        return smartStartWordChoices[randrange(len(smartStartWordChoices))]
+    else:
+        print("hello??")
+        return dumbStartWordChoices[randrange(len(dumbStartWordChoices))]
 
 
 def removeMultipleLetter(letter):

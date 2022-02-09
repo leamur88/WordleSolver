@@ -35,7 +35,7 @@ def createPayload(msg, reply):
         return {
             "text": msg,
             "reply": {
-                "in_reply_to_tweet_id": reply
+                "in_reply_to_tweet_id": str(reply)
             }
         }
     else:
@@ -53,13 +53,13 @@ def createMessage(fname, wordleday, message):
         return msg
 
 
-def sendTweet(message, fname):
+def sendTweet(message, fname, reply_id):
     secretsFile = s3.get_object(Bucket=bucket, Key='secretsWordle.json')
     secretsContent = secretsFile['Body']
 
     secrets = json.loads(secretsContent.read())
 
-    replyID = 0
+    replyID = reply_id
     wordleDay = 223 + (date.today() - date(2022,1,28)).days
 
     ct = secrets['consumer_token']
@@ -71,5 +71,5 @@ def sendTweet(message, fname):
 
     payload = createPayload(msg, replyID)
     partial_response = postTweet(ct, ck, at, ats, payload)
-    reply_id = partial_response['data']['id']
-    return reply_id
+    new_reply_id = partial_response['data']['id']
+    return new_reply_id
