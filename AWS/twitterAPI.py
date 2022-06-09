@@ -46,10 +46,12 @@ def createMessage(fname, wordleday, message):
     if fname == "supposedWords.csv":
         msg = "Smart Robot, Wordle Day " + str(wordleday)
         msg += "\n\n" + message
+        msg += "\n#wordle #wordlebot"
         return msg
     else:
         msg = "Not as Smart Robot, Wordle Day " + str(wordleday)
         msg += "\n\n" + message
+        msg += "\n#wordle #wordlebot"
         return msg
 
 

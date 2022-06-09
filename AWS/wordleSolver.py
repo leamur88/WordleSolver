@@ -113,7 +113,7 @@ def chooseWord():
 
 
 def playGame(startWord):
-    driver.get("https://www.powerlanguage.co.uk/wordle/")
+    driver.get("https://www.nytimes.com/games/wordle/index.html")
     wordChosen = startWord
     tweet = ""
     webpage = driver.find_element(By.TAG_NAME, "body")
@@ -162,6 +162,7 @@ def playGame(startWord):
         tweet += '\n'
         words.pop(wordChosen, None)
         if correct == 5:
+            driver.quit()
             return [i,tweet]
 
         for c in removeChar:
