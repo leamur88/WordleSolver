@@ -33,6 +33,7 @@ wordle display is printed in the terminal.
 ## AWS
 Currently using the tutorial from this [video](https://www.youtube.com/watch?v=jWqbYiHudt8) to set up my AWS Lambda 
 environment.
+https://github.com/soumilshah1995/Selenium-on-AWS-Lambda-Python3.7/blob/main/test.py
 
 ## Future Expansion
 * Tweet out daily wordle summary for each bot 
