@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
+# import emoji
 
 chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
@@ -32,81 +33,6 @@ def init(filename):
         wordsleft = len(validWords)
         print("We have " + str(wordsleft) + " words left to guess!")
     return startWordChoices[randrange(len(startWordChoices))]
-
-
-def playGame(startWord):
-    driver.get("https://www.powerlanguage.co.uk/wordle/")
-    wordChosen = startWord
-    webpage = driver.find_element(By.CLASS_NAME, "nightmode")
-
-    webpage.click()
-    time.sleep(1)
-    webpage.send_keys(wordChosen)
-    webpage.send_keys(Keys.RETURN)
-    for i in range(0, 6):
-        removeChar = []
-        removePos = []
-        removeNotIn = []
-        removeMultiple = []
-
-        javascript = """return document
-        .querySelector('game-app').shadowRoot
-        .querySelector('game-theme-manager')
-        .querySelector('#game')
-        .querySelector('#board-container')
-        .querySelector('#board')
-        .querySelectorAll('game-row')[{}].shadowRoot
-        .querySelector('div.row')
-        .querySelectorAll('game-tile')
-        """
-
-        board = driver.execute_script(javascript.format(i))
-        correct = 0
-        for j in range(5):
-            evaluation = board[j].get_attribute("evaluation")
-            print(j, board[j].get_attribute("letter"), evaluation)
-            if evaluation == "absent":
-                if wordChosen[j] not in validLetters:
-                    removeChar.append(wordChosen[j])
-                else:
-                    removeMultiple.append(wordChosen[j])
-            elif evaluation == "present":
-                validLetters.append(wordChosen[j])
-                removeNotIn.append([wordChosen[j], j])
-            else:
-                correct += 1
-                validLetters.append(wordChosen[j])
-                removePos.append([wordChosen[j], j])
-        words.pop(wordChosen, None)
-        if correct == 5:
-            return i
-
-        for c in removeChar:
-            if c not in validLetters:
-                removeLetter(c)
-
-        for p in removePos:
-            removeSpecificPosition(p[0], p[1])
-
-        for n in removeNotIn:
-            removeLetterNotInWord(n[0], n[1])
-
-        for m in removeMultiple:
-            removeMultipleLetter(m)
-
-        time.sleep(2)
-        wordsleft = len(words.keys())
-        print("We have " + str(wordsleft) + " words left to guess!")
-
-        wordChosen = chooseWord()
-        webpage.send_keys(wordChosen)
-        print("word chosen:", wordChosen)
-
-        webpage.send_keys(Keys.RETURN)
-        print("return")
-        driver.refresh()
-        webpage = driver.find_element(By.CLASS_NAME, "nightmode")
-        time.sleep(1)
 
 
 def removeMultipleLetter(letter):
@@ -167,48 +93,80 @@ def chooseWord():
     return word
 
 
-def collectInfo(filename):
-    driver.get("https://www.powerlanguage.co.uk/wordle/")
-    # webpage = driver.find_element(By.CLASS_NAME, "nightmode")
-    javascript1 = """return document
-            .querySelector('game-app').shadowRoot
-            .querySelector('game-theme-manager')
-            .querySelector('#game')
-            .querySelector('game-modal')
-            .querySelector('game-stats').shadowRoot
-            .querySelector('div.container')
-            .querySelector('div.footer')
-            .querySelector('div.share')
-            """
-    javascript2 = """return document
-                .querySelector('game-app').shadowRoot
-                .querySelector('game-theme-manager')
-                .querySelector('#game')
-                .querySelector('game-modal')
-                .querySelector('game-stats')
-                """
-    time.sleep(2)
-    share = driver.execute_script(javascript1)
-    score = driver.execute_script(javascript2)
-    share.find_element(By.ID, 'share-button').click()
-    print("Share", share)
-    print(clipboard.paste())
+def playGame(startWord):
+    driver.get("https://www.nytimes.com/games/wordle/index.html")
+    wordChosen = startWord
+    tweet = ""
+    webpage = driver.find_element(By.TAG_NAME, "body")
 
-    with open('results.json', 'r+') as f:
-        data = json.load(f)
-        if filename == 'validWords.csv':
-            data["dumb"][score.get_attribute("highlight-guess")] += 1
-        else:
-            data["smart"][score.get_attribute("highlight-guess")] += 1
+    webpage.click()
+    time.sleep(1)
+    webpage.send_keys(wordChosen)
+    webpage.send_keys(Keys.RETURN)
+    for i in range(0, 6):
+        removeChar = []
+        removePos = []
+        removeNotIn = []
+        removeMultiple = []
 
-        f.seek(0)
-        json.dump(data, f, indent=4)
-        f.truncate()
+        correct = 0
+        for j in range(5):
+            tile = driver.find_element(By.XPATH, '//*[@id="wordle-app-game"]/div[1]/div/div[{}]/div[{}]/div'.format(i + 1, j+1))
+            time.sleep(1)
+            evaluation = tile.get_attribute("data-state")
+            print(j, tile.get_attribute("data-state"), evaluation)
+            if evaluation == "absent":
+                tweet += 'b'
+                if wordChosen[j] not in validLetters:
+                    removeChar.append(wordChosen[j])
+                else:
+                    removeMultiple.append(wordChosen[j])
+            elif evaluation == "present":
+                tweet += 'y'
+                validLetters.append(wordChosen[j])
+                removeNotIn.append([wordChosen[j], j])
+            else:
+                correct += 1
+                tweet += 'g'
+                validLetters.append(wordChosen[j])
+                removePos.append([wordChosen[j], j])
+        tweet += '\n'
+        words.pop(wordChosen, None)
+        if correct == 5:
+            driver.quit()
+            return [i,tweet]
+
+        for c in removeChar:
+            if c not in validLetters:
+                removeLetter(c)
+
+        for p in removePos:
+            removeSpecificPosition(p[0], p[1])
+
+        for n in removeNotIn:
+            removeLetterNotInWord(n[0], n[1])
+
+        for m in removeMultiple:
+            removeMultipleLetter(m)
+
+        time.sleep(2)
+        wordsleft = len(words.keys())
+        print("We have " + str(wordsleft) + " words left to guess!")
+
+        wordChosen = chooseWord()
+        webpage.send_keys(wordChosen)
+        print("word chosen:", wordChosen)
+
+        webpage.send_keys(Keys.RETURN)
+        print("return")
+        driver.refresh()
+        webpage = driver.find_element(By.TAG_NAME, "body")
+        time.sleep(1)
 
 
 def run(filename):
     word = init(filename)
     word = "penis"
     n = playGame(word)
-    collectInfo(filename)
-    return n
+    # collectInfo(filename)
+    return n[0]

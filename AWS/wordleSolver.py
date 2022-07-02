@@ -128,22 +128,12 @@ def playGame(startWord):
         removeNotIn = []
         removeMultiple = []
 
-        javascript = """return document
-        .querySelector('game-app').shadowRoot
-        .querySelector('game-theme-manager')
-        .querySelector('#game')
-        .querySelector('#board-container')
-        .querySelector('#board')
-        .querySelectorAll('game-row')[{}].shadowRoot
-        .querySelector('div.row')
-        .querySelectorAll('game-tile')
-        """
-
-        board = driver.execute_script(javascript.format(i))
         correct = 0
         for j in range(5):
-            evaluation = board[j].get_attribute("evaluation")
-            print(j, board[j].get_attribute("letter"), evaluation)
+            tile = driver.find_element(By.XPATH, '//*[@id="wordle-app-game"]/div[1]/div/div[{}]/div[{}]/div'.format(i + 1, j+1))
+            time.sleep(1)
+            evaluation = tile.get_attribute("data-state")
+            print(j, tile.get_attribute("data-state"), evaluation)
             if evaluation == "absent":
                 tweet += emoji.emojize(":black_large_square:")
                 if wordChosen[j] not in validLetters:

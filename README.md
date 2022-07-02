@@ -39,3 +39,8 @@ https://github.com/soumilshah1995/Selenium-on-AWS-Lambda-Python3.7/blob/main/tes
 * Tweet out daily wordle summary for each bot 
 * ^Add this to Lambda Function
 * Update word frequency calculation to reduce the value of words that have multiple of the same letter
+
+## Update 07/02/2022
+Surprisingly, all of the things mentioned in the Future Expansion section actually got completed. Recently the NYT did
+change the HTML behind wordle and it took me quite a few days to notice. The most recent code works with the updated HTML
+and the twitter bot is up and running again! If you ever want to check it out on twitter you can find it @wordlebotsolver.
